@@ -1,4 +1,7 @@
 # numeric-edittext
+
+[![Build Status](https://travis-ci.org/hidroh/numeric-edittext.svg?branch=master)](https://travis-ci.org/hidroh/numeric-edittext)
+
 A simple numeric EditText widget for Android that automatically formats input text using locale-specific decimal number format.
 
 **Behaviour**
