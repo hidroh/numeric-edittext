@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">numeric-edittext</string>
+    <string name="title_activity_main">Numeric EditText</string>
+</resources>
