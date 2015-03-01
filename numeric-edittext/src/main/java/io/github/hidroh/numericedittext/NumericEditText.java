@@ -29,8 +29,6 @@ public class NumericEditText extends EditText {
     private String mDefaultText = null;
     private String mPreviousText = "";
     private String mNumberFilterRegex = "[^\\d\\" + DECIMAL_SEPARATOR + "]";
-    private char mDecimalSeparator = DECIMAL_SEPARATOR;
-    private boolean hasCustomDecimalSeparator = false;
 
     /**
      * Interface to notify listeners when numeric value has been changed or cleared
@@ -59,7 +57,7 @@ public class NumericEditText extends EditText {
             }
 
             // valid decimal number should not have more than 2 decimal separators
-            if (StringUtils.countMatches(s.toString(), String.valueOf(mDecimalSeparator)) > 1) {
+            if (StringUtils.countMatches(s.toString(), String.valueOf(DECIMAL_SEPARATOR)) > 1) {
                 validateLock = true;
                 setText(mPreviousText); // cancel change and revert to previous input
                 setSelection(mPreviousText.length());
@@ -140,24 +138,7 @@ public class NumericEditText extends EditText {
      */
     public void setDefaultNumericValue(double defaultNumericValue, final String defaultNumericFormat) {
         mDefaultText = String.format(defaultNumericFormat, defaultNumericValue);
-        if (hasCustomDecimalSeparator) {
-            // swap locale decimal separator with custom one for display
-            mDefaultText = StringUtils.replace(mDefaultText,
-                    String.valueOf(DECIMAL_SEPARATOR), String.valueOf(mDecimalSeparator));
-        }
-
         setTextInternal(mDefaultText);
-    }
-
-    /**
-     * Use specified character for decimal separator. This will disable formatting.
-     * This must be called before {@link #setDefaultNumericValue} if any
-     * @param customDecimalSeparator    decimal separator to be used
-     */
-    public void setCustomDecimalSeparator(char customDecimalSeparator) {
-        mDecimalSeparator = customDecimalSeparator;
-        hasCustomDecimalSeparator = true;
-        mNumberFilterRegex = "[^\\d\\" + mDecimalSeparator + "]";
     }
 
     /**
@@ -177,12 +158,6 @@ public class NumericEditText extends EditText {
      */
     public double getNumericValue() {
         String original = getText().toString().replaceAll(mNumberFilterRegex, "");
-        if (hasCustomDecimalSeparator) {
-            // swap custom decimal separator with locale one to allow parsing
-            original = StringUtils.replace(original,
-                    String.valueOf(mDecimalSeparator), String.valueOf(DECIMAL_SEPARATOR));
-        }
-
         try {
             return NumberFormat.getInstance().parse(original).doubleValue();
         } catch (ParseException e) {
@@ -196,24 +171,21 @@ public class NumericEditText extends EditText {
      * @return  string with correct grouping separators
      */
     private String format(final String original) {
-        final String[] parts = original.split("\\" + mDecimalSeparator, -1);
+        final String[] parts = original.split("\\" + DECIMAL_SEPARATOR, -1);
         String number = parts[0] // since we split with limit -1 there will always be at least 1 part
                 .replaceAll(mNumberFilterRegex, "")
                 .replaceFirst(LEADING_ZERO_FILTER_REGEX, "");
 
-        // only add grouping separators for non custom decimal separator
-        if (!hasCustomDecimalSeparator) {
-            // add grouping separators, need to reverse back and forth since Java regex does not support
-            // right to left matching
-            number = StringUtils.reverse(
-                    StringUtils.reverse(number).replaceAll("(.{3})", "$1" + GROUPING_SEPARATOR));
-            // remove leading grouping separator if any
-            number = StringUtils.removeStart(number, String.valueOf(GROUPING_SEPARATOR));
-        }
+        // add grouping separators, need to reverse back and forth since Java regex does not support
+        // right to left matching
+        number = StringUtils.reverse(
+                StringUtils.reverse(number).replaceAll("(.{3})", "$1" + GROUPING_SEPARATOR));
+        // remove leading grouping separator if any
+        number = StringUtils.removeStart(number, String.valueOf(GROUPING_SEPARATOR));
 
         // add fraction part if any
         if (parts.length > 1) {
-            number += mDecimalSeparator + parts[1];
+            number += DECIMAL_SEPARATOR + parts[1];
         }
 
         return number;
