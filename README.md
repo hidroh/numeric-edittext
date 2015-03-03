@@ -22,25 +22,31 @@ With numeric value of
 
 Layout declaration:
 
-    <io.github.hidroh.numericedittext.NumericEditText
-        android:inputType="numberDecimal|number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+```xml
+<io.github.hidroh.numericedittext.NumericEditText
+    android:inputType="numberDecimal|number"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+```
 
 Add and remove numeric value watcher the same way `TextWatcher` works for `EditText`:
 
-    numericEditText.addNumericValueChangedListener(new NumericEditText.NumericValueWatcher() {
-            @Override
-            public void onChanged(double newValue) {
-                // handle on numeric value changed
-            }
+```java
+numericEditText.addNumericValueChangedListener(new NumericEditText.NumericValueWatcher() {
+        @Override
+        public void onChanged(double newValue) {
+            // handle on numeric value changed
+        }
 
-            @Override
-            public void onCleared() {
-                // handle value cleared
-            }
-        });
+        @Override
+        public void onCleared() {
+            // handle value cleared
+        }
+    });
+```
 
 Get numeric value behind input value in `EditText`:
 
-    numericEditText.getNumericValue();
+```java
+numericEditText.getNumericValue();
+```
