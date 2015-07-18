@@ -1,7 +1,7 @@
 package io.github.hidroh.numericedittext.sample;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -9,7 +9,7 @@ import android.widget.Toast;
 import io.github.hidroh.numericedittext.NumericEditText;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
