@@ -2,12 +2,11 @@ package io.github.hidroh.numericedittext;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -57,7 +56,7 @@ public class NumericEditText extends EditText {
             }
 
             // valid decimal number should not have more than 2 decimal separators
-            if (StringUtils.countMatches(s.toString(), String.valueOf(DECIMAL_SEPARATOR)) > 1) {
+            if (countMatches(s.toString(), String.valueOf(DECIMAL_SEPARATOR)) > 1) {
                 validateLock = true;
                 setText(mPreviousText); // cancel change and revert to previous input
                 setSelection(mPreviousText.length());
@@ -178,10 +177,10 @@ public class NumericEditText extends EditText {
 
         // add grouping separators, need to reverse back and forth since Java regex does not support
         // right to left matching
-        number = StringUtils.reverse(
-                StringUtils.reverse(number).replaceAll("(.{3})", "$1" + GROUPING_SEPARATOR));
+        number = reverse(
+                reverse(number).replaceAll("(.{3})", "$1" + GROUPING_SEPARATOR));
         // remove leading grouping separator if any
-        number = StringUtils.removeStart(number, String.valueOf(GROUPING_SEPARATOR));
+        number = removeStart(number, String.valueOf(GROUPING_SEPARATOR));
 
         // add fraction part if any
         if (parts.length > 1) {
@@ -199,5 +198,34 @@ public class NumericEditText extends EditText {
         removeTextChangedListener(mTextWatcher);
         setText(text);
         addTextChangedListener(mTextWatcher);
+    }
+
+    private String reverse(String original) {
+        if (original == null || original.length() <= 1) {
+            return original;
+        }
+        return TextUtils.getReverse(original, 0, original.length()).toString();
+    }
+
+    private String removeStart(String str, String remove) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        if (str.startsWith(remove)){
+            return str.substring(remove.length());
+        }
+        return str;
+    }
+
+    private int countMatches(String str, String sub) {
+        if (TextUtils.isEmpty(str)) {
+            return 0;
+        }
+        int lastIndex = str.lastIndexOf(sub);
+        if (lastIndex < 0) {
+            return 0;
+        } else {
+            return 1 + countMatches(str.substring(0, lastIndex), sub);
+        }
     }
 }
