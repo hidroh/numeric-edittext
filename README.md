@@ -18,6 +18,8 @@ With numeric value of
 
     100000.75
 
+![](sample.gif)
+
 **Usage**
 
 Layout declaration:
